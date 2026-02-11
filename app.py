@@ -22,7 +22,7 @@ def login_page():
         if user:
             st.session_state.logged_in = True
             st.session_state.username = user[0]
-            st.session_state.fullname = user[1]
+            st.session_state.fullname = user[3]
             st.success("Login successful!")
             st.rerun()
         else:
@@ -38,32 +38,22 @@ def register_page():
     st.title("📝 Register")
 
     fullname = st.text_input("Full Name")
-    username = st.text_input("Username")
     email = st.text_input("Email")
+    username = st.text_input("Username")
     password = st.text_input("Password", type="password")
-    confirm_password = st.text_input("Confirm Password", type="password")
     age = st.number_input("Age", min_value=10, max_value=100, step=1)
 
-    qualification_options = [
-        "Engineering",
-        "Medical",
-        "Science",
-        "Commerce",
-        "Arts",
-        "Diploma",
-        "Other"
-    ]
+    # Qualification dropdown
+    qualification_options = ["Engineering", "Medical", "Art", "Other"]
+    qualification = st.selectbox("Qualification", qualification_options)
 
-    qualification = st.selectbox("Qualification Stream", qualification_options)
-
+    # If "Other" selected, allow manual input
     if qualification == "Other":
-        qualification = st.text_input("Enter Your Qualification")
+        qualification = st.text_input("Enter your qualification")
 
     if st.button("Create Account"):
-        if password != confirm_password:
-            st.error("Passwords do not match")
-        elif not fullname or not username or not email:
-            st.error("Please fill all required fields")
+        if not fullname or not email or not username or not password or not age or not qualification:
+            st.error("Please fill in all fields")
         else:
             msg = register_user(username, password, email, fullname, age, qualification)
             st.success(msg)
