@@ -1,7 +1,9 @@
 import streamlit as st
 from database import register_user, login_user
-from dashboard import dashboard  # import your StudyFlix dashboard
+from dashboard import dashboard  # Import StudyFlix dashboard
+from courses import courses_dashboard  # Optional: courses page if used
 
+# ---------------- PAGE CONFIG ----------------
 st.set_page_config(page_title="AI Study Assistant", layout="centered")
 
 # ---------------- SESSION STATES ----------------
@@ -29,6 +31,7 @@ def login_page():
             st.session_state.age = user[4]
             st.session_state.qualification = user[5]
             st.success("Login successful!")
+            st.session_state.page = "dashboard"
             st.rerun()
         else:
             st.error("Invalid username or password")
@@ -81,4 +84,4 @@ if not st.session_state.logged_in:
         register_page()
 else:
     # ✅ After login, show the StudyFlix dashboard
-    dashboard(st.session_state)
+    dashboard()
