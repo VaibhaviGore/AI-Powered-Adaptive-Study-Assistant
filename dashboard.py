@@ -39,22 +39,6 @@ section[data-testid="stSidebar"] {
 </style>
 """, unsafe_allow_html=True)
 
-# ---------------- SESSION DEFAULTS ----------------
-if "fullname" not in st.session_state:
-    st.session_state.fullname = "Student"
-
-if "xp" not in st.session_state:
-    st.session_state.xp = 250
-
-if "streak" not in st.session_state:
-    st.session_state.streak = 3
-
-if "study_hours" not in st.session_state:
-    st.session_state.study_hours = 12
-
-if "joke_shown" not in st.session_state:
-    st.session_state.joke_shown = False
-
 
 # ---------------- LEVEL FUNCTION ----------------
 def get_level(xp):
@@ -68,36 +52,50 @@ def get_level(xp):
         return "Legend"
 
 
-# ---------------- DASHBOARD ----------------
-def dashboard():
+# ---------------- DASHBOARD FUNCTION ----------------
+def dashboard(session_state):
 
-    level = get_level(st.session_state.xp)
+    # ---------- DEFAULTS ----------
+    if "xp" not in session_state:
+        session_state.xp = 250
+    if "streak" not in session_state:
+        session_state.streak = 3
+    if "study_hours" not in session_state:
+        session_state.study_hours = 12
+    if "joke_shown" not in session_state:
+        session_state.joke_shown = False
+    if "fullname" not in session_state:
+        session_state.fullname = "Student"
+
+    level = get_level(session_state.xp)
 
     # ---------- SIDEBAR ----------
-    st.sidebar.success(f"👋 Welcome, {st.session_state.fullname}")
+    st.sidebar.success(f"👋 Welcome, {session_state.fullname}")
     st.sidebar.markdown("### 🎯 Your Stats")
-    st.sidebar.write(f"⭐ XP Points: {st.session_state.xp}")
-    st.sidebar.write(f"🔥 Study Streak: {st.session_state.streak} Days")
+    st.sidebar.write(f"⭐ XP Points: {session_state.xp}")
+    st.sidebar.write(f"🔥 Study Streak: {session_state.streak} Days")
     st.sidebar.write(f"🏆 Level: {level}")
     st.sidebar.markdown("---")
     st.sidebar.info(f"📅 Today: {datetime.date.today()}")
 
+    if st.sidebar.button("Logout"):
+        session_state.logged_in = False
+        session_state.page = "login"
+        st.rerun()
+
     # ---------- TITLE ----------
     st.title("🎬 StudyFlix Dashboard")
     st.markdown("### Where Study Feels Interesting ✨")
-
     st.markdown("---")
 
     # ---------- CONTINUE STUDY ----------
     st.subheader("🎥 Continue Study")
     if st.button("▶ Resume Last Session"):
         st.success("Resuming your last study episode...")
-
     st.markdown("---")
 
     # ---------- ROW 1 ----------
     col1, col2 = st.columns(2)
-
     with col1:
         st.subheader("📚 Courses")
         st.write("Explore curated YouTube & top study resources.")
@@ -114,10 +112,9 @@ def dashboard():
 
     # ---------- ROW 2 ----------
     col3, col4 = st.columns(2)
-
     with col3:
         st.subheader("🔥 Study Streak")
-        st.success(f"{st.session_state.streak} Day Streak 🔥")
+        st.success(f"{session_state.streak} Day Streak 🔥")
         st.write("Consistency builds legends.")
         if st.button("📆 View Streak Details"):
             st.info("Showing streak analytics...")
@@ -135,15 +132,13 @@ def dashboard():
     st.info("📢 SPPU Result Date Announced: 25 March")
     st.info("📢 Hackathon Registration Deadline: 30 March")
     st.info("📢 New AI Course Added: Data Structures Mastery")
-
     st.markdown("---")
 
     # ---------- MOTIVATION ----------
-    if st.session_state.xp > 300:
+    if session_state.xp > 300:
         st.success("🚀 You are leveling up like a true engineer!")
     else:
         st.warning("💡 Remember: Edison failed 1000 times. Keep going!")
-
     st.markdown("---")
 
     # ---------- MEME SECTION ----------
@@ -154,7 +149,7 @@ def dashboard():
     """)
 
     # ---------- AUTO TECH JOKE POPUP ----------
-    if not st.session_state.joke_shown:
+    if not session_state.joke_shown:
         time.sleep(3)
         jokes = [
             "Why do programmers prefer dark mode? Because light attracts bugs! 🐛",
@@ -162,11 +157,7 @@ def dashboard():
             "I changed my password to 'incorrect' so when I forget it says 'your password is incorrect' 😅"
         ]
         st.toast(random.choice(jokes))
-        st.session_state.joke_shown = True
+        session_state.joke_shown = True
 
     st.markdown("---")
     st.success("🎬 Choose your next learning episode and keep climbing!")
-
-
-# ---------------- RUN ----------------
-dashboard()

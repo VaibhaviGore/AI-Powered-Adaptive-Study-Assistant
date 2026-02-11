@@ -1,9 +1,10 @@
 import streamlit as st
 from database import register_user, login_user
+from dashboard import dashboard  # import your StudyFlix dashboard
 
 st.set_page_config(page_title="AI Study Assistant", layout="centered")
 
-# Session states
+# ---------------- SESSION STATES ----------------
 if "page" not in st.session_state:
     st.session_state.page = "login"
 
@@ -20,9 +21,13 @@ def login_page():
     if st.button("Login"):
         user = login_user(username, password)
         if user:
+            # Save all user info in session_state
             st.session_state.logged_in = True
             st.session_state.username = user[0]
-            st.session_state.fullname = user[3]
+            st.session_state.fullname = user[1]
+            st.session_state.email = user[2]
+            st.session_state.age = user[4]
+            st.session_state.qualification = user[5]
             st.success("Login successful!")
             st.rerun()
         else:
@@ -56,21 +61,15 @@ def register_page():
             st.error("Please fill in all fields")
         else:
             msg = register_user(username, password, email, fullname, age, qualification)
-            st.success(msg)
+            if "successfully" in msg:
+                st.success(msg)
+                st.session_state.page = "login"
+                st.rerun()
+            else:
+                st.error(msg)
 
     st.markdown("Already have an account?")
     if st.button("⬅ Login Here"):
-        st.session_state.page = "login"
-        st.rerun()
-
-# ---------------- DASHBOARD ----------------
-def dashboard():
-    st.sidebar.success(f"Welcome {st.session_state.fullname}")
-    st.title("🎓 Student Dashboard")
-    st.write("AI Study features will appear here.")
-
-    if st.sidebar.button("Logout"):
-        st.session_state.logged_in = False
         st.session_state.page = "login"
         st.rerun()
 
@@ -81,4 +80,5 @@ if not st.session_state.logged_in:
     elif st.session_state.page == "register":
         register_page()
 else:
-    dashboard()
+    # ✅ After login, show the StudyFlix dashboard
+    dashboard(st.session_state)
