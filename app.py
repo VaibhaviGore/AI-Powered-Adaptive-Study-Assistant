@@ -83,5 +83,7 @@ if not st.session_state.logged_in:
     elif st.session_state.page == "register":
         register_page()
 else:
-    # ✅ After login, show the StudyFlix dashboard
-    dashboard()
+    if st.session_state.page == "dashboard":
+        dashboard()  # Shows dashboard from dashboard.py
+    elif st.session_state.page == "courses":
+        courses_dashboard()
