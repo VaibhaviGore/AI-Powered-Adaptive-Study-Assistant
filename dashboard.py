@@ -77,8 +77,8 @@ def dashboard():
     with col2:
         st.subheader("🧠 AI Study Room")
         if st.button("🤖 Start AI Session"):
-            st.success("Launching AI Study Room...")
-
+          st.session_state.page = "StudyRoom"
+          st.rerun()
     st.markdown("---")
 
     # ---------- ROW 2 ----------

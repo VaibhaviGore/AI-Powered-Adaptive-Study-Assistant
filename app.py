@@ -2,6 +2,7 @@ import streamlit as st
 from database import register_user, login_user
 from dashboard import dashboard  # Import StudyFlix dashboard
 from courses import courses_dashboard  # Optional: courses page if used
+from studyWithAi import studyRoom
 
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(page_title="AI Study Assistant", layout="centered")
@@ -87,3 +88,5 @@ else:
         dashboard()  # Shows dashboard from dashboard.py
     elif st.session_state.page == "courses":
         courses_dashboard()
+    elif st.session_state.page=="StudyRoom":
+        studyRoom()
